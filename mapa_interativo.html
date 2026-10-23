@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa Interativo de Capacidade Multiplicada — Gestão de Demandas Administrativas</title>
+<style>
+:root{--bg:#f4f6fb;--fg:#1a1a1a;--card:#fff;--muted:#5a6b87;--h:#1e2761;--gold:#b8860b;--line:#c9d2e6;--ok:#2c5f2d;--okbg:#eaf3ea;--bad:#990011;--badbg:#fbecee;--warn:#946f00;--warnbg:#fdf3d8;--navy:#1e2761;--navyfg:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1530;--fg:#e8ecf8;--card:#19204a;--muted:#9fb0d6;--h:#a9bdff;--gold:#e0b84a;--line:#33407a;--ok:#8fd19a;--okbg:#17301d;--bad:#ff8d9b;--badbg:#3a1820;--warn:#f0cf74;--warnbg:#3a3214;--navy:#27336f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1530;--fg:#e8ecf8;--card:#19204a;--muted:#9fb0d6;--h:#a9bdff;--gold:#e0b84a;--line:#33407a;--ok:#8fd19a;--okbg:#17301d;--bad:#ff8d9b;--badbg:#3a1820;--warn:#f0cf74;--warnbg:#3a3214;--navy:#27336f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+header{background:var(--navy);color:var(--navyfg);padding:22px 20px 18px;text-align:center}
+header small{letter-spacing:.14em;color:#cadcfc;font-size:12px}
+header h1{margin:6px 0 4px;font:700 clamp(21px,4.5vw,30px)/1.2 Georgia,"Times New Roman",serif}
+header p{margin:0;color:#cadcfc;font-size:14px}
+nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:12px 10px;background:var(--card);border-bottom:2px solid var(--gold)}
+nav button{font:600 14px system-ui,Arial,sans-serif;border:1px solid var(--line);background:var(--bg);color:var(--h);padding:8px 13px;border-radius:999px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+main{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+section[hidden]{display:none}
+h2{font:700 22px/1.25 Georgia,serif;color:var(--h);margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 16px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card h3{margin:0 0 6px;font-size:16px;color:var(--h)}
+.btn{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.btn:hover,.btn[aria-expanded="true"]{border-color:var(--gold)}
+.btn b{color:var(--h)}
+.tag{display:inline-block;font:700 11px system-ui;padding:2px 9px;border-radius:999px;margin-bottom:5px;letter-spacing:.04em}
+.ia{background:var(--navy);color:#fff}.hu{background:var(--badbg);color:var(--bad);border:1px solid var(--bad)}.en{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn)}
+.detail{margin-top:14px;border-left:4px solid var(--gold);background:var(--card);border-radius:8px;padding:12px 16px;min-height:70px}
+.steps{display:flex;gap:8px;flex-wrap:wrap}.steps .btn{flex:1 1 150px;text-align:center;width:auto}
+.steps .btn small{display:block;color:var(--muted)}
+table{width:100%;border-collapse:collapse;background:var(--card);font-size:14.5px}
+th{background:var(--navy);color:#fff;text-align:left;padding:9px}
+td{border:1px solid var(--line);padding:9px;vertical-align:top}
+.wrap{overflow-x:auto}
+.risk .sg{display:none;margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--okbg);color:var(--ok);font-size:14.5px}
+.risk .btn[aria-expanded="true"] .sg{display:block}
+.risk .rs{color:var(--bad);font-size:14.5px}
+.rec{background:var(--navy);color:#fff;border-radius:14px;padding:18px 20px}
+.rec h3{margin:0 0 4px;color:#e0b84a;font-size:22px}
+.kv{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:14px}
+.kv div{background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;font-size:14.5px}
+.kv b{display:block;color:#cadcfc;font-size:12px;letter-spacing:.06em}
+.txt p{margin:0 0 12px;text-align:justify}.txt h3{color:var(--h);margin:16px 0 4px}
+.note{font-size:13px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header><small>EXÉRCITO BRASILEIRO · OPERAÇÃO CAPACIDADE MULTIPLICADA</small>
+<h1>Mapa Interativo de Capacidade Multiplicada</h1>
+<p>Proposta 3 — Apoio à gestão de demandas administrativas ostensivas</p></header>
+<nav role="tablist" id="tabs"></nav>
+<main>
+<section id="s0"><h2>O problema institucional</h2>
+<p class="lead">A Organização Militar recebe um volume crescente de demandas administrativas ostensivas, e o tratamento manual gera lentidão e retrabalho.</p>
+<div class="grid">
+<div class="card"><h3>Tempo excessivo de triagem</h3>Cada demanda é lida, classificada e encaminhada à mão, e o acúmulo atrasa as respostas.</div>
+<div class="card"><h3>Retrabalho e duplicidade</h3>Pedidos semelhantes chegam por canais diferentes e são tratados mais de uma vez.</div>
+<div class="card"><h3>Baixa padronização</h3>Critérios de classificação e de encaminhamento variam conforme quem recebe.</div>
+<div class="card"><h3>Desafio central</h3>Ganhar fluidez <b>sem</b> permitir que a IA defina prioridades institucionais, que seguem sob análise humana.</div></div>
+<h2 style="margin-top:24px">Capacidades ampliadas</h2><p class="lead">Toque em uma dimensão para ver o que muda.</p>
+<div class="grid" id="dims"></div><div class="detail" id="dimd">Selecione uma dimensão.</div></section>
+
+<section id="s1" hidden><h2>Fluxo de trabalho</h2><p class="lead">Toque em cada etapa para ver quem faz o quê.</p>
+<div class="steps" id="steps"></div><div class="detail" id="stepd">Selecione uma etapa.</div></section>
+
+<section id="s2" hidden><h2>Matriz: atividade, papel da IA e responsabilidade humana</h2><p class="lead">A IA organiza e sugere; o humano valida e decide.</p>
+<div class="wrap"><table><tr><th>Atividade</th><th>Papel da IA</th><th>Responsabilidade humana</th></tr>
+<tr><td><b>Classificar demandas</b> por tipo e assunto</td><td>Propõe a classe e o grau de confiança</td><td>Militar da triagem confere e corrige cada classificação antes de seguir</td></tr>
+<tr><td><b>Agrupar</b> demandas semelhantes e apontar duplicidades</td><td>Sinaliza possíveis duplicatas e agrupamentos</td><td>Confirma se são de fato iguais e decide mesclar ou manter</td></tr>
+<tr><td><b>Sugerir encaminhamento inicial</b> à seção competente</td><td>Indica o destino provável, com a justificativa</td><td>Valida o destino e responde pelo encaminhamento</td></tr>
+<tr><td><b>Definir prioridade</b> da demanda</td><td>Nenhum papel decisório; apenas destaca prazos citados no texto</td><td>Chefe da seção define a prioridade, com base no interesse da missão</td></tr>
+<tr><td><b>Registrar</b> o uso da IA e a fonte</td><td>Gera o registro automático do que foi sugerido</td><td>Mantém a fonte documental e assina a validação</td></tr></table></div></section>
+
+<section id="s3" hidden><h2>Riscos e salvaguardas</h2><p class="lead">Toque em um risco para ver a salvaguarda.</p><div class="grid risk" id="risks"></div></section>
+
+<section id="s4" hidden><h2>Indicadores de avaliação</h2><p class="lead">Metas propostas para o piloto; toque para ver como medir.</p>
+<div class="grid" id="inds"></div><div class="detail" id="indd">Selecione um indicador.</div></section>
+
+<section id="s5" hidden><div class="rec"><span class="tag en">RECOMENDAÇÃO AO COMANDANTE</span><h3>Implantação piloto</h3>
+Aprovar a solução em caráter piloto, limitado a demandas ostensivas, com ampliação condicionada ao cumprimento do critério de sucesso.
+<div class="kv"><div><b>RESPONSÁVEL INICIAL</b>Chefe da Seção Administrativa, com apoio da Divisão de TI</div>
+<div><b>PRAZO DE TESTE</b>90 dias</div>
+<div><b>CONDIÇÃO MÍNIMA DE SEGURANÇA</b>Ambiente institucional autorizado, apenas informação ostensiva, registro de todo uso e validação humana de 100% dos encaminhamentos</div>
+<div><b>CRITÉRIO DE SUCESSO</b>Redução de ao menos 30% no tempo de triagem, acerto de 90% ou mais na amostra auditada e nenhum incidente de segurança</div></div></div></section>
+
+<section id="s6" hidden class="txt"><h2>Apresentação textual</h2>
+<h3>Problema e proposta</h3><p>Uma Organização Militar recebe grande volume de demandas administrativas ostensivas. A triagem manual consome tempo, gera retrabalho e varia conforme quem a executa. Propõe-se uma solução de IA que classifica, organiza e sugere encaminhamentos iniciais, sempre sob validação humana.</p>
+<h3>Justificativa</h3><p>A proposta amplia a capacidade processual, ao dar fluidez e padronização ao fluxo, a capacidade cognitiva, ao reduzir a carga de leitura repetitiva, e a gestão do conhecimento, ao registrar classificações e decisões. A IA não define prioridades: essa decisão permanece com o chefe da seção, que responde pelo resultado.</p>
+<h3>Riscos e supervisão humana</h3><p>Os principais riscos são erro factual, uso de dados inadequados, confiança excessiva, perda de rastreabilidade e dependência cognitiva. Cada um tem salvaguarda específica: revisão obrigatória com consulta à fonte, uso restrito a ambiente autorizado e informação ostensiva, treinamento e checklist, registro de cada uso e rodízio de revisores. A supervisão humana ocorre em todos os pontos de decisão do fluxo.</p>
+<h3>Recomendação</h3><p>Implantação piloto de 90 dias, sob responsabilidade do Chefe da Seção Administrativa, com critério de sucesso objetivo para decidir a ampliação.</p>
+<p class="note">Ferramenta de IA utilizada: Claude (Anthropic), como apoio à organização e à redação. Conteúdo revisado e validado pelo autor, que responde por ele. Autor: [nome e posto].</p></section>
+</main>
+<script>
+var T=["Problema e capacidades","Fluxo","Matriz","Riscos","Indicadores","Recomendação","Apresentação textual"];
+var nav=document.getElementById("tabs");
+T.forEach(function(t,i){var b=document.createElement("button");b.textContent=t;b.setAttribute("role","tab");b.setAttribute("aria-selected",i==0);b.onclick=function(){show(i)};nav.appendChild(b)});
+function show(n){T.forEach(function(_,i){document.getElementById("s"+i).hidden=i!=n;nav.children[i].setAttribute("aria-selected",i==n)});window.scrollTo(0,0);if(location.hash!="#"+n)history.replaceState(null,"","#"+n)}
+function pick(list,box,out,render){list.forEach(function(it,i){var b=document.createElement("button");b.className="btn";b.setAttribute("aria-expanded","false");b.innerHTML=render(it);b.onclick=function(){[].forEach.call(box.children,function(c){c.setAttribute("aria-expanded","false")});b.setAttribute("aria-expanded","true");if(out)out.innerHTML=it.d};box.appendChild(b)})}
+var dims=[{t:"Processual",s:"Fluxo mais rápido e padronizado",d:"<b>Processual.</b> A triagem passa a seguir um critério único de classificação e encaminhamento, o que reduz espera, duplicidade e variação entre quem recebe."},
+{t:"Cognitiva",s:"Menos leitura repetitiva",d:"<b>Cognitiva.</b> A IA faz a primeira leitura e a organização. O militar usa o tempo ganho para analisar casos complexos, em vez de ler tudo do zero."},
+{t:"Gestão do conhecimento",s:"Histórico organizado e recuperável",d:"<b>Gestão do conhecimento.</b> Classificações, encaminhamentos e decisões ficam registrados, o que permite localizar casos anteriores e reaproveitar soluções."}];
+pick(dims,document.getElementById("dims"),document.getElementById("dimd"),function(x){return"<b>"+x.t+"</b><br><small>"+x.s+"</small>"});
+var st=[{t:"1. Recepção",w:"Humano",d:"<span class='tag hu'>HUMANO</span><br>O protocolo recebe a demanda ostensiva e a insere no ambiente autorizado. Demanda com dado sigiloso ou sensível não entra no sistema."},
+{t:"2. Classificação",w:"IA",d:"<span class='tag ia'>IA APOIA</span><br>A IA propõe tipo, assunto e possíveis duplicidades, com grau de confiança."},
+{t:"3. Validação",w:"Humano",d:"<span class='tag hu'>HUMANO VALIDA</span><br>O militar da triagem confere cada proposta na fonte original e corrige o que for preciso. Sem validação, a demanda não avança."},
+{t:"4. Sugestão de destino",w:"IA",d:"<span class='tag ia'>IA APOIA</span><br>A IA sugere a seção competente e o encaminhamento inicial, com justificativa. Não indica prioridade."},
+{t:"5. Decisão",w:"Humano",d:"<span class='tag hu'>DECISÃO HUMANA</span><br>O chefe da seção define a prioridade e aprova o encaminhamento. Esta decisão nunca é automatizada."},
+{t:"6. Registro",w:"Misto",d:"<span class='tag en'>REGISTRO</span><br>O sistema registra o que foi sugerido e o que foi decidido, com data e validador. Os indicadores são atualizados."}];
+pick(st,document.getElementById("steps"),document.getElementById("stepd"),function(x){return"<b>"+x.t+"</b><small>"+x.w+"</small>"});
+var rk=[{r:"Alucinação ou erro factual",s:"Revisão humana obrigatória e consulta à fonte original antes de qualquer encaminhamento."},
+{r:"Uso de dados inadequados",s:"Classificação da informação na entrada e uso exclusivo de ambiente institucional autorizado, apenas com demandas ostensivas."},
+{r:"Confiança excessiva",s:"Treinamento dos usuários, checklist de validação e auditoria por amostragem das aprovações."},
+{r:"Perda de rastreabilidade",s:"Registro de cada uso da IA, com versão e validador, e manutenção da fonte documental."},
+{r:"Dependência cognitiva",s:"Rodízio de revisores, capacitação continuada e triagem manual periódica para preservar a competência da equipe."},
+{r:"IA definindo prioridades",s:"A IA não gera ranking de prioridade. A prioridade só é registrada pelo chefe da seção."}];
+pick(rk,document.getElementById("risks"),null,function(x){return"<b>"+x.r+"</b><div class='rs'>Toque para ver a salvaguarda</div><div class='sg'><b>Salvaguarda:</b> "+x.s+"</div>"});
+var ind=[{t:"Tempo médio de triagem",m:"Meta: reduzir 30% ou mais",d:"<b>Tempo médio de triagem.</b> Medido do recebimento ao encaminhamento validado, comparado com a média anterior ao piloto."},
+{t:"Acerto da classificação",m:"Meta: 90% ou mais",d:"<b>Acerto da classificação.</b> Amostra semanal auditada por um segundo militar, que confere o que a IA sugeriu contra a decisão correta."},
+{t:"Validação humana",m:"Meta: 100%",d:"<b>Validação humana.</b> Todo encaminhamento precisa ter validador registrado. Qualquer exceção é tratada como falha de processo."},
+{t:"Retrabalho e duplicidades",m:"Meta: reduzir",d:"<b>Retrabalho e duplicidades.</b> Número de demandas reabertas ou tratadas em duplicidade por mês."},
+{t:"Incidentes de segurança",m:"Meta: zero",d:"<b>Incidentes de segurança.</b> Casos de dado inadequado inserido ou de uso fora do ambiente autorizado. Um incidente suspende o piloto para revisão."}];
+pick(ind,document.getElementById("inds"),document.getElementById("indd"),function(x){return"<b>"+x.t+"</b><br><small>"+x.m+"</small>"});
+var h=parseInt(location.hash.slice(1));if(h>=0&&h<T.length)show(h);
+</script>
+</body>
+</html>
